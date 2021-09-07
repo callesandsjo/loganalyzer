@@ -7,7 +7,14 @@
 #
 
 
-# most connection attempts: cat test_logfile.txt | grep -o "[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+" | uniq -c | sort -r | head -n 1
+# most connection attempts: cat test_logfile.txt | grep -o "[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+" | sort | uniq -c | sort -r | head -n 1
 
-# most successful attempts: cat test_logfile.txt | grep -e " 200 " | grep -o "[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+" | uniq -c | sort -r | head -n 1
+# most successful attempts: cat test_logfile.txt | grep -e " 200 " | grep -o "[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+" | sort | uniq -c | sort -r | head -n 1
+
+
+#number = '^[0-9]+$'
+#if [$1 == "-n"] {
+#    if ![[$2 =~ $number]]; then
+#    
+#}
 
