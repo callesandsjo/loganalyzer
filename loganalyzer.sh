@@ -43,4 +43,9 @@
 # cat test_logfile.txt | awk '{print $1,$9}' | sort | uniq -c // gets the number of times an ip address gets a result code  
 # cat test_logfile.txt| awk '{print $9,$1}' | sort | uniq -c | sort -r -n -k1 -k2 | awk '{print $2,$3}' // gets everything that -r is asked to do.
 
+# -F "What are the most common result codes that indicate failure, and where do thet come from?"
+# bas commando : cat test_logfile.txt| awk '{print $9,$1}' | sort | uniq -c | sort -r -n -k1 -k2 | awk '{print $2,$3}' //-r
+# modified the base commando so that the lines with a 4xx result code only gets sorted
+# cat test_logfile.txt | awk '{print $9,$1}' | grep -E "4[0-9]{2} " | sort | uniq -c | sort -r -n -k1 -k2 | awk '{print $2,$3}' // should be what -F is asked to do?
+
 
