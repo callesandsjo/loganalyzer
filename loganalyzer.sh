@@ -37,9 +37,10 @@
 # -r "What are the most common result codes and where do they come from?"
 # Cut out the ip addresses with the codes, i.e exclude everything in between.
 # bas commando : cat test_logfile.txt | grep -Eo "[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" // gets ip adresses
-# grep -E " [0-9]{3} " // gets result codes
-# grep -Eo " [0-9]{3} "  | sort | uniq -c // gets the number of times each result code occurs.
-# grep -Eo "^([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})|( [0-9]{3} )" // gets ip and result code for each line, however is printed on different lines in #output 
-#
+# cat test_logfile.txt | grep -E " [0-9]{3} " // gets result codes
+# cat test_logfile.txt |grep -Eo " [0-9]{3} "  | sort | uniq -c // gets the number of times each result code occurs.
+# cat test_logfile.txt | grep -Eo "^([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})|( [0-9]{3} )" // gets ip and result code for each line, however is printed on different lines in #output
+# cat test_logfile.txt | awk '{print $1,$9}' | sort | uniq -c // gets the number of times an ip address gets a result code  
+# cat test_logfile.txt| awk '{print $9,$1}' | sort | uniq -c | sort -r -n -k1 -k2 | awk '{print $2,$3}' // gets everything that -r is asked to do.
 
 
