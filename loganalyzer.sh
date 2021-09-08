@@ -24,10 +24,49 @@
 
 #echo $ASD2 | sort -n -r
 
+
+get_most_connection_attempts()
+{
+    # -c argument: Which IP number has the most most connection attempts.
+
+    LOG_FILE=$1
+    cat $LOG_FILE | grep -E -o "[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" | sort | uniq -c | sort
+
+}
+
+
+get_most_successful_attempts()
+{
+    # -2 argument: Which IP number has the most successful attempts.
+    
+    LOG_FILE=$1
+    cat $LOG_FILE | grep -E '" 200 ' | grep -E -o "[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" | sort | uniq -c | sort
+
+}
+
+
+get_most_bytes_received()
+{
+    # -t argument: Which IP number get the most bytes sent to them.
+
+    LOG_FILE=$1
+    ALL_UNIQUE_IPS=$(cat $LOG_FILE | grep -E '" 200 ' | grep -E -o "[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" | sort | uniq);
+
+    BYTES_RECEIVED=""
+    for IP in $ALL_UNIQUE_IPS
+    do
+        BYTES_RECEIVED=$BYTES_RECEIVED"\n"$(cat $LOG_FILE | grep -E '" 200 ' | sort | awk -F ' ' '$1 == "'$IP'" {sum += $10} END {print sum " " "'$IP'"}')
+    done
+
+    echo $BYTES_RECEIVED | sort -n
+}
+
+
 help()
 {
     echo "Usage: log_sum.sh [-n N] (-c|-2|-r|-F|-t) <filename>"
 }
+
 
 # check if argument $1 is a number
 #number = '^[0-9]+$'
