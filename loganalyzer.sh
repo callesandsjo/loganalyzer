@@ -64,7 +64,7 @@ get_most_bytes_received()
 
 help()
 {
-    echo "Usage: log_sum.sh [-n N] (-c|-2|-r|-F|-t) <filename>"
+    echo "Usage: ./log_analyzer.sh [-n N] (-c|-2|-r|-F|-t) <filename>"
 }
 
 
