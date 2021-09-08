@@ -24,8 +24,10 @@
 
 #echo $ASD2 | sort -n -r
 
-
-
+help()
+{
+    echo "Usage: log_sum.sh [-n N] (-c|-2|-r|-F|-t) <filename>"
+}
 
 # check if argument $1 is a number
 #number = '^[0-9]+$'
