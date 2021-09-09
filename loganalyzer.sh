@@ -30,7 +30,7 @@ get_most_connection_attempts()
     # -c argument: Which IP number has the most most connection attempts.
 
     LOG_FILE=$1
-    cat $LOG_FILE | grep -E -o "[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" | sort | uniq -c | sort
+    cat $LOG_FILE | grep -E -o "[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" | sort | uniq -c | sort -r
 
 }
 
@@ -40,7 +40,7 @@ get_most_successful_attempts()
     # -2 argument: Which IP number has the most successful attempts.
     
     LOG_FILE=$1
-    cat $LOG_FILE | grep -E '" 200 ' | grep -E -o "[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" | sort | uniq -c | sort
+    cat $LOG_FILE | grep -E '" 200 ' | grep -E -o "[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" | sort | uniq -c | sort -r
 
 }
 
@@ -58,7 +58,7 @@ get_most_bytes_received()
         BYTES_RECEIVED=$BYTES_RECEIVED"\n"$(cat $LOG_FILE | grep -E '" 200 ' | sort | awk -F ' ' '$1 == "'$IP'" {sum += $10} END {print sum " " "'$IP'"}')
     done
 
-    echo $BYTES_RECEIVED | sort -n
+    echo $BYTES_RECEIVED | sort -n -r
 }
 
 
@@ -66,6 +66,51 @@ help()
 {
     echo "Usage: ./log_analyzer.sh [-n N] (-c|-2|-r|-F|-t) <filename>"
 }
+
+
+handle_args()
+{
+    if [ $# -eq 0 ]; then
+        help
+        exit 1
+    fi
+
+    LIMIT_LINES=-1
+    while getopts ':c:2:r:F:t:n:' flag; do
+    case "${flag}" in
+        c) LOG_FILE=$OPTARG
+        OUTPUT=$(get_most_connection_attempts $LOG_FILE);;
+        2) LOG_FILE=$OPTARG
+        OUTPUT=$(get_most_successful_attempts $LOG_FILE);;
+        r) LOG_FILE=$OPTARG;;
+        F) LOG_FILE=$OPTARG;;
+        t) LOG_FILE=$OPTARG
+        OUTPUT=$(get_most_bytes_received $LOG_FILE);;
+        n) LIMIT_LINES=$OPTARG
+        ;;
+        \?) echo "Invalid option '$OPTARG'" 
+        help
+        exit 1;;
+        esac
+    done
+}
+
+
+main()
+{
+    handle_args $@
+
+    if [ $LIMIT_LINES -eq -1 ]
+    then
+        echo "$OUTPUT"
+    else
+        echo "$OUTPUT" | head -n $LIMIT_LINES
+    fi
+}
+
+
+main $@
+
 
 
 # check if argument $1 is a number
