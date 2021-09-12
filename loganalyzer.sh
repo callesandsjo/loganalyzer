@@ -6,6 +6,7 @@
 #              It reads log files and outputs information depending on the options.
 #
 
+
 get_most_connection_attempts()
 {
     # -c argument: Which IP number has the most most connection attempts.
@@ -67,7 +68,7 @@ get_most_common_codes_ips()
     fi
 }
 
-# problem med att cat rensades efter körning så var tvungen att spara till variabler
+
 get_most_failures()
 {
     # -F "What are the most common result codes that indicate failure, and where do thet come from?"
@@ -90,7 +91,7 @@ get_most_failures()
     fi
 }
 
-# problem med att sortera gruppvis
+
 help()
 {
     echo "Usage: ./loganalyzer.sh [-n N] (-c|-2|-r|-F|-t) <filename>"
@@ -109,8 +110,7 @@ check_option_used()
     fi
 }
 
-# problem med att få optional arguments
-# väljer att skriva en egen hantering av argument
+
 handle_args()
 {
     if [ $# -eq 0 ]; then
@@ -134,9 +134,6 @@ handle_args()
                     exit 1
                 fi
                 shift;;
-            -e)
-                CHECKING_IP=1
-                ;;
             -c)
                 check_option_used
                 FLAG="c"
@@ -232,7 +229,6 @@ format_output()
 }
 
 
-
 main()
 {
     handle_args $@
@@ -241,42 +237,3 @@ main()
 
 
 main $@
-
-
-
-# check if argument $1 is a number
-#number = '^[0-9]+$'
-#if [$1 == "-n"] {
-#    if ![[$2 =~ $number]]; then
-#    
-#}
-
-# -r "What are the most common result codes and where do they come from?"
-# Cut out the ip addresses with the codes, i.e exclude everything in between.
-# bas commando : cat test_logfile.txt | grep -Eo "[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" // gets ip adresses
-# cat test_logfile.txt | grep -E " [0-9]{3} " // gets result codes
-# cat test_logfile.txt |grep -Eo " [0-9]{3} "  | sort | uniq -c // gets the number of times each result code occurs.
-# cat test_logfile.txt | grep -Eo "^([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})|( [0-9]{3} )" // gets ip and result code for each line, however is printed on different lines in #output
-# cat test_logfile.txt | awk '{print $1,$9}' | sort | uniq -c // gets the number of times an ip address gets a result code  
-# cat test_logfile.txt| awk '{print $9,$1}' | sort | uniq -c | sort -r -n -k1 -k2 | awk '{print $2,$3}' // gets everything that -r is asked to do.
-
-# -F "What are the most common result codes that indicate failure, and where do thet come from?"
-# bas commando : cat test_logfile.txt| awk '{print $9,$1}' | sort | uniq -c | sort -r -n -k1 -k2 | awk '{print $2,$3}' //-r
-# modified the base commando so that the lines with a 4xx result code only gets sorted
-# cat test_logfile.txt | awk '{print $9,$1}' | grep -E "4[0-9]{2} " | sort | uniq -c | sort -r -n -k1 -k2 | awk '{print $2,$3}' // should be what -F is asked to do?
-
-
-# cat test_logfile.txt | awk '{print $9,$1}' | grep -E "4[0-9]{2} " | sort | uniq -c | sort -r -n -k2,2 | awk '{print $2,$3}'
-
-ips_from_blacklist()
-{
-    while read in; do nslookup "$in" | tail -n 2 | grep Address | cut -d " " -f 2; done < dns.blacklist.txt
-}
-
-compare_ips()
-{
-    BLACKLISTED_IPS=$(ips_from_blacklist)
-
-    echo "$OUTPUT" | awk '{for(blacklisted_ip in '"$BLACKLISTED_IPS"')if ($1 == blacklisted_ip) print $1, $2, "*Blacklisted!*"'
-    echo "$BLACKLISTED_IPS"
-}
